@@ -1,12 +1,14 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='DouZero: PyTorch DouDizhu AI')
+parser = argparse.ArgumentParser(description='MahjongZero: PyTorch MahJong AI')
 
 # General Settings
-parser.add_argument('--xpid', default='douzero',
-                    help='Experiment id (default: douzero)')
+parser.add_argument('--xpid', default='mahjongzero',
+                    help='Experiment id (default: mahjongzero)')
 parser.add_argument('--save_interval', default=30, type=int,
                     help='Time interval (in minutes) at which to save the model')    
+parser.add_argument('--mode', default='simple', type=str, choices=['simple', 'standard'],
+                    help='Play Simple or National Standard Mahjong (default: Simple)')    
 parser.add_argument('--objective', default='adp', type=str, choices=['adp', 'wp', 'logadp'],
                     help='Use ADP or WP as reward (default: ADP)')    
 

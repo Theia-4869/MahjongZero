@@ -12,7 +12,8 @@ from torch import nn
 
 from .file_writer import FileWriter
 from .models import Model
-from .utils import get_batch, log, create_env, create_buffers, create_optimizers, act
+from .utils import log, create_buffers, create_optimizers, act
+# from .utils import get_batch, log, create_buffers, create_optimizers, act
 
 mean_episode_return_buf = {p:deque(maxlen=100) for p in ['landlord', 'landlord_up', 'landlord_down']}
 
@@ -105,8 +106,8 @@ def train(flags):
     full_queues = {}
         
     for device in device_iterator:
-        _free_queue = {'landlord': ctx.SimpleQueue(), 'landlord_up': ctx.SimpleQueue(), 'landlord_down': ctx.SimpleQueue()}
-        _full_queue = {'landlord': ctx.SimpleQueue(), 'landlord_up': ctx.SimpleQueue(), 'landlord_down': ctx.SimpleQueue()}
+        _free_queue = {'east': ctx.SimpleQueue(), 'south': ctx.SimpleQueue(), 'west': ctx.SimpleQueue(), 'north': ctx.SimpleQueue()}
+        _full_queue = {'east': ctx.SimpleQueue(), 'south': ctx.SimpleQueue(), 'west': ctx.SimpleQueue(), 'north': ctx.SimpleQueue()}
         free_queues[device] = _free_queue
         full_queues[device] = _full_queue
 
@@ -118,22 +119,24 @@ def train(flags):
 
     # Stat Keys
     stat_keys = [
-        'mean_episode_return_landlord',
-        'loss_landlord',
-        'mean_episode_return_landlord_up',
-        'loss_landlord_up',
-        'mean_episode_return_landlord_down',
-        'loss_landlord_down',
+        'mean_episode_return_east',
+        'loss_east',
+        'mean_episode_return_south',
+        'loss_south',
+        'mean_episode_return_west',
+        'loss_west',
+        'mean_episode_return_north',
+        'loss_north',
     ]
     frames, stats = 0, {k: 0 for k in stat_keys}
-    position_frames = {'landlord':0, 'landlord_up':0, 'landlord_down':0}
+    position_frames = {'east':0, 'south':0, 'west':0, 'north':0}
 
     # Load models if any
     if flags.load_model and os.path.exists(checkpointpath):
         checkpoint_states = torch.load(
             checkpointpath, map_location=("cuda:"+str(flags.training_device) if flags.training_device != "cpu" else "cpu")
         )
-        for k in ['landlord', 'landlord_up', 'landlord_down']:
+        for k in ['east', 'south', 'west', 'north']:
             learner_model.get_model(k).load_state_dict(checkpoint_states["model_state_dict"][k])
             optimizers[k].load_state_dict(checkpoint_states["optimizer_state_dict"][k])
             for device in device_iterator:
@@ -152,6 +155,8 @@ def train(flags):
                 args=(i, device, free_queues[device], full_queues[device], models[device], buffers[device], flags))
             actor.start()
             actor_processes.append(actor)
+    
+    raise ValueError(1412)
 
     def batch_and_learn(i, device, position, local_lock, position_lock, lock=threading.Lock()):
         """Thread target for the learning process."""
