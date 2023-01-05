@@ -344,18 +344,16 @@ class InfoSet(object):
     """
     The game state is described as infoset, which
     includes all the information in the current situation,
-    such as the hand cards of the three players, the
+    such as the hand cards of the four players, the
     historical moves, etc.
     """
     def __init__(self, player_position):
-        # The player position, i.e., landlord, landlord_down, or landlord_up
+        # The player position, i.e., east, south, west, or north
         self.player_position = player_position
         # The hand cands of the current player. A list.
         self.player_hand_cards = None
         # The number of cards left for each player. It is a dict with str-->int 
         self.num_cards_left_dict = None
-        # The three landload cards. A list.
-        self.three_landlord_cards = None
         # The historical moves. It is a list of list
         self.card_play_action_seq = None
         # The union of the hand cards of the other two players for the current player 
