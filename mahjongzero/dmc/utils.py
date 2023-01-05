@@ -9,7 +9,7 @@ import time
 import torch 
 from torch import multiprocessing as mp
 
-# from .env_utils import Environment
+from .env_utils import Environment
 from mahjongzero.env import Env
 # from douzero.env.env import _cards2array
 
@@ -120,6 +120,7 @@ def act(i, device, free_queue, full_queue, model, buffers, flags):
 
         env = create_env(flags)
         env = Environment(env, device)
+        raise ValueError(1412)
 
         done_buf = {p: [] for p in positions}
         episode_return_buf = {p: [] for p in positions}

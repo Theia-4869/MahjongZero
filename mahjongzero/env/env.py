@@ -41,7 +41,6 @@ class Env:
         self.players = {}
         for position in ['east', 'south', 'west', 'north']:
             self.players[position] = DummyAgent(position)
-        raise ValueError(1412)
 
         # Initialize the internal environment
         self._env = GameEnv(self.players)
